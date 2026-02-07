@@ -16,6 +16,7 @@ type SaveInput struct {
 	DataDir      string
 	ChatID       int64
 	OriginalName string
+	MaxBytes     int64
 }
 
 func SaveIncomingFile(ctx context.Context, in SaveInput) (string, error) {
@@ -56,14 +57,29 @@ func SaveIncomingFile(ctx context.Context, in SaveInput) (string, error) {
 		return "", fmt.Errorf("download failed: status %s", resp.Status)
 	}
 
+	if in.MaxBytes > 0 && resp.ContentLength > 0 && resp.ContentLength > in.MaxBytes {
+		return "", fmt.Errorf("file too large: %d bytes (max %d)", resp.ContentLength, in.MaxBytes)
+	}
+
 	out, err := os.Create(dstPath)
 	if err != nil {
 		return "", fmt.Errorf("create file: %w", err)
 	}
 	defer out.Close()
 
-	if _, err := io.Copy(out, resp.Body); err != nil {
+	reader := io.Reader(resp.Body)
+	if in.MaxBytes > 0 {
+		reader = io.LimitReader(resp.Body, in.MaxBytes+1)
+	}
+
+	written, err := io.Copy(out, reader)
+	if err != nil {
+		_ = os.Remove(dstPath)
 		return "", fmt.Errorf("write file: %w", err)
+	}
+	if in.MaxBytes > 0 && written > in.MaxBytes {
+		_ = os.Remove(dstPath)
+		return "", fmt.Errorf("file too large: wrote %d bytes (max %d)", written, in.MaxBytes)
 	}
 
 	return dstPath, nil

@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
@@ -15,14 +16,18 @@ import (
 )
 
 type Handler struct {
-	api     *tgbotapi.BotAPI
-	dataDir string
+	api          *tgbotapi.BotAPI
+	dataDir      string
+	maxFileBytes int64
+	limiter      *rateLimiter
 }
 
-func NewHandler(api *tgbotapi.BotAPI, dataDir string) *Handler {
+func NewHandler(api *tgbotapi.BotAPI, dataDir string, maxFileBytes int64, maxDocsPerMinuteChat int) *Handler {
 	return &Handler{
-		api:     api,
-		dataDir: dataDir,
+		api:          api,
+		dataDir:      dataDir,
+		maxFileBytes: maxFileBytes,
+		limiter:      newRateLimiter(maxDocsPerMinuteChat, time.Minute),
 	}
 }
 
@@ -61,6 +66,16 @@ func (h *Handler) handleDocument(ctx context.Context, msg *tgbotapi.Message) err
 		return nil
 	}
 
+	if h.limiter != nil {
+		if ok, retryAfter := h.limiter.Allow(msg.Chat.ID); !ok {
+			seconds := int(retryAfter.Seconds()) + 1
+			if seconds < 1 {
+				seconds = 1
+			}
+			return h.replyText(msg.Chat.ID, fmt.Sprintf("Too many uploads. Try again in %ds.", seconds))
+		}
+	}
+
 	name := strings.TrimSpace(doc.FileName)
 	if name == "" {
 		name = "upload.xlsx"
@@ -70,6 +85,13 @@ func (h *Handler) handleDocument(ctx context.Context, msg *tgbotapi.Message) err
 	if ext != ".xlsx" && ext != ".csv" {
 		return h.replyText(msg.Chat.ID, "Please upload a .xlsx or .csv file.")
 	}
+
+	if h.maxFileBytes > 0 && doc.FileSize > 0 && int64(doc.FileSize) > h.maxFileBytes {
+		return h.replyText(msg.Chat.ID, fmt.Sprintf("File is too large (%d bytes). Max allowed is %d bytes.", doc.FileSize, h.maxFileBytes))
+	}
+
+	docCtx, cancel := context.WithTimeout(ctx, 2*time.Minute)
+	defer cancel()
 
 	file, err := h.api.GetFile(tgbotapi.FileConfig{FileID: doc.FileID})
 	if err != nil {
@@ -81,11 +103,12 @@ func (h *Handler) handleDocument(ctx context.Context, msg *tgbotapi.Message) err
 		return errors.New("empty file download URL")
 	}
 
-	savedPath, err := storage.SaveIncomingFile(ctx, storage.SaveInput{
+	savedPath, err := storage.SaveIncomingFile(docCtx, storage.SaveInput{
 		FileURL:      fileURL,
 		DataDir:      h.dataDir,
 		ChatID:       msg.Chat.ID,
 		OriginalName: filepath.Base(name),
+		MaxBytes:     h.maxFileBytes,
 	})
 	if err != nil {
 		_ = h.replyText(msg.Chat.ID, "Failed to download the file.")

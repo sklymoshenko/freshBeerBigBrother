@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -19,6 +20,9 @@ type Config struct {
 	DataDir   string
 	Mode      Mode
 	PublicURL string
+
+	MaxFileBytes         int64
+	MaxDocsPerMinuteChat int
 }
 
 func Load() (Config, error) {
@@ -54,10 +58,30 @@ func Load() (Config, error) {
 		return Config{}, errors.New("BOT_PUBLIC_URL is required for webhook mode")
 	}
 
+	maxFileBytes := int64(25 * 1024 * 1024) // 25 MiB default
+	if raw := strings.TrimSpace(os.Getenv("MAX_FILE_BYTES")); raw != "" {
+		n, err := strconv.ParseInt(raw, 10, 64)
+		if err != nil || n <= 0 {
+			return Config{}, fmt.Errorf("invalid MAX_FILE_BYTES: %s", raw)
+		}
+		maxFileBytes = n
+	}
+
+	maxDocsPerMinuteChat := 6
+	if raw := strings.TrimSpace(os.Getenv("MAX_DOCS_PER_MINUTE_CHAT")); raw != "" {
+		n, err := strconv.Atoi(raw)
+		if err != nil || n <= 0 {
+			return Config{}, fmt.Errorf("invalid MAX_DOCS_PER_MINUTE_CHAT: %s", raw)
+		}
+		maxDocsPerMinuteChat = n
+	}
+
 	return Config{
-		Token:     token,
-		DataDir:   dataDir,
-		Mode:      mode,
-		PublicURL: publicURL,
+		Token:                token,
+		DataDir:              dataDir,
+		Mode:                 mode,
+		PublicURL:            publicURL,
+		MaxFileBytes:         maxFileBytes,
+		MaxDocsPerMinuteChat: maxDocsPerMinuteChat,
 	}, nil
 }

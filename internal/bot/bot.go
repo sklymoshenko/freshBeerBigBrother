@@ -24,7 +24,7 @@ func Run(ctx context.Context, cfg config.Config) error {
 	api.Debug = false
 	log.Printf("Authorized as @%s", api.Self.UserName)
 
-	handler := NewHandler(api, cfg.DataDir)
+	handler := NewHandler(api, cfg.DataDir, cfg.MaxFileBytes, cfg.MaxDocsPerMinuteChat)
 
 	updateCfg := tgbotapi.NewUpdate(0)
 	updateCfg.Timeout = 30

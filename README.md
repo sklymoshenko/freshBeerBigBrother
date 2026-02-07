@@ -20,6 +20,8 @@ Uploaded files are stored under `./data/incoming/` by default.
 - `DATA_DIR` (default: `./data`)
 - `BOT_MODE` (default: `polling`)
 - `BOT_PUBLIC_URL` (required for `webhook` mode; not implemented yet)
+- `MAX_FILE_BYTES` (default: `26214400` = 25 MiB)
+- `MAX_DOCS_PER_MINUTE_CHAT` (default: `6`)
 
 Env files are loaded automatically: `.env.local` takes priority, otherwise `.env` is used.
 Existing environment variables are not overridden.

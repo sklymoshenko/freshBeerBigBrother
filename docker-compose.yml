@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  bigbrother:
+    build: .
+    container_name: bigbrother
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - DATA_DIR=/data
+    volumes:
+      - ./data:/data

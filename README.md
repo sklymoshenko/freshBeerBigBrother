@@ -37,3 +37,11 @@ When you move to Hetzner, the typical setup is:
 - Set `BOT_MODE=webhook` and `BOT_PUBLIC_URL=https://your-domain`
 
 For now, the code runs in polling mode only; webhook mode will be added later.
+
+## Docker Compose
+
+1. Create `.env` with your config (see Environment variables).
+2. Build and run:
+   - `docker compose up -d --build`
+3. Logs:
+   - `docker compose logs -f`

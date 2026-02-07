@@ -1,0 +1,11 @@
+bin
+data
+.env
+.env.local
+.git
+.gitignore
+*.md
+**/*_test.go
+internal/processor/testData.csv
+internal/processor/testData.xlsx
+internal/processor/testData_mismatch.csv

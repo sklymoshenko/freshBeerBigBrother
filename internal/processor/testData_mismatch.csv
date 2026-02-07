@@ -1,0 +1,21 @@
+Číslo daňového dokladu,Kategorie,Produkt,Pokladna,DPH,Datum vystavení,EAN,Typ platby,Prodané množství
+3001,Pivovar Premium,Beer A,Pokladna 1,21.00,06.02.2026 20:10:00,8594000000001,Hotovost,2.00
+3001,PET láhve,"Láhev 0,5 l",Pokladna 1,21.00,06.02.2026 20:10:00,8594000000002,Hotovost,3
+3001,PET láhve,Taška s uchem,Pokladna 1,21.00,06.02.2026 20:10:00,8594000000003,Hotovost,1
+3002,Pivo na čepu světlé,Beer Tap,Pokladna 2,21.00,06.02.2026 20:12:00,8594000000004,Platební karta,"1,0"
+3002,PET láhve,Láhev 1 l,Pokladna 2,21.00,06.02.2026 20:12:00,8594000000005,Platební karta,2
+3003,Pivovar Dark,Beer C,Pokladna 3,21.00,06.02.2026 20:14:00,8594000000006,Hotovost,"1,5"
+3003,PET láhve,"Láhev 0,5 l",Pokladna 3,21.00,06.02.2026 20:14:00,8594000000007,Hotovost,2
+3004,Pivovar Premium,Beer D,Pokladna 1,21.00,06.02.2026 20:16:00,8594000000008,Hotovost,2.00
+3004,PET láhve,"Láhev 0,5 l",Pokladna 1,21.00,06.02.2026 20:16:00,8594000000009,Hotovost,4
+3005,Pivo na čepu tmavé,Beer Tap,Pokladna 2,21.00,06.02.2026 20:18:00,8594000000010,Platební karta,1.00
+3005,PET láhve,Láhev 1 l,Pokladna 2,21.00,06.02.2026 20:18:00,8594000000011,Platební karta,1
+3006,PET láhve,Láhev 1 l,Pokladna 3,21.00,06.02.2026 20:20:00,8594000000012,Hotovost,1
+3007,Pivovar Premium,Beer E,Pokladna 1,21.00,06.02.2026 20:22:00,8594000000013,Hotovost,0.50
+3008,Pivovar Premium,Beer F,Pokladna 2,21.00,06.02.2026 20:24:00,8594000000014,Platební karta,"2,5"
+3008,PET láhve,Láhev 1 l,Pokladna 2,21.00,06.02.2026 20:24:00,8594000000015,Platební karta,2
+3008,PET láhve,"Láhev 0,5 l",Pokladna 2,21.00,06.02.2026 20:24:00,8594000000016,Platební karta,1
+3009,Pivovar Premium,Beer G,Pokladna 3,21.00,06.02.2026 20:26:00,8594000000017,Hotovost,1.00
+3009,PET láhve,Taška s uchem,Pokladna 3,21.00,06.02.2026 20:26:00,8594000000018,Hotovost,1
+3010,Pivovar Premium,Beer H,Pokladna 1,21.00,06.02.2026 20:28:00,8594000000019,Hotovost,3.00
+3010,PET láhve,"Láhev 0,5 l",Pokladna 1,21.00,06.02.2026 20:28:00,8594000000020,Hotovost,5
